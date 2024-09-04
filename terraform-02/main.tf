@@ -1,3 +1,4 @@
+/*
 terraform {
   backend "s3" {
     bucket         = "tfstates-bucket-0051"
@@ -56,3 +57,4 @@ resource "aws_instance" "web" {
 
   }
 }
+*/
