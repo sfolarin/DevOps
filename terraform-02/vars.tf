@@ -1,3 +1,4 @@
+/*
 variable "amis" {
   type = map(string)
   default = {
@@ -21,3 +22,4 @@ variable "myinstant" {
 type = string
 default = "t2.micro"
 }
+*/
