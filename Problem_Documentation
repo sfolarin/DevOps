@@ -1,0 +1,74 @@
+Problem Statement
+The Git repository contained several large files that significantly increased its size, making operations slow and potentially reaching limits imposed by remote hosting services like GitHub.
+
+Objective
+Remove large and unnecessary files from the repository's history, reduce the repository size, and implement best practices to prevent similar issues in the future.
+
+Tools Used
+Git: Version control system to manage source code history.
+BFG Repo-Cleaner: A simpler, faster alternative to git filter-branch for cleaning up bad data from Git repository history.
+Git LFS (Large File Storage): Used for managing large files without bloating the repository history.
+Step-by-Step Solution
+1. Identify Large Files
+Used the following Git commands to list the largest objects in the repository:
+bash
+Copy code
+git rev-list --all --objects | \
+git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | \
+sort -nk3 | \
+tail -n 10
+This helped identify specific large files that needed to be removed or managed differently.
+2. Attempt to Remove Large Files Using BFG
+Attempted to remove large files directly using BFG Repo-Cleaner:
+bash
+Copy code
+java -jar bfg.jar --delete-files "{filename1,filename2}" /path/to/repo.git
+Adjusted BFG settings to try and force removal when initial attempts did not remove all files:
+bash
+Copy code
+java -jar bfg.jar --no-blob-protection --delete-files "{filename1,filename2}" /path/to/repo.git
+3. Manual File Removal and History Rewriting
+When BFG did not update the refs as expected, switched to manual removal using git filter-branch:
+bash
+Copy code
+git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path_to_large_file" --prune-empty --tag-name-filter cat -- --all
+4. Repository Cleanup
+Executed Git garbage collection to clean up and compress the repository data:
+bash
+Copy code
+git gc --prune=now --aggressive
+5. Verification and Force Push
+Verified the repository's size and functionality:
+bash
+Copy code
+du -sh .git/
+Force-pushed the cleaned repository to the remote to update all branches and tags:
+bash
+Copy code
+git push origin --force --all
+git push origin --force --tags
+6. Implement Git Large File Storage (Git LFS)
+Installed and configured Git LFS to handle future large files properly:
+bash
+Copy code
+git lfs install
+git lfs track "*.type"
+git add .gitattributes
+git commit -m "Track large files with Git LFS"
+7. Update .gitignore File
+Updated the .gitignore file to ensure temporary or large files are not tracked by Git inadvertently in the future.
+8. Documentation and Communication
+Documented all steps and shared findings with the team. Advised them to clone the fresh repository to avoid synchronization issues.
+Outcome
+The repository size was significantly reduced from several hundred megabytes to just 7.4 MB, enhancing performance and manageability. The team is now better equipped to handle large files appropriately with Git LFS.
+
+Conclusion
+This comprehensive approach resolved the repository size issue while also setting up preventive measures for future operations, ensuring better management of large files and overall repository health.
+
+
+
+
+
+
+
+
