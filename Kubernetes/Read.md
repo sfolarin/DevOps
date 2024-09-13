@@ -1,4 +1,9 @@
+
+
+![Screenshot 2024-09-13 160238](https://github.com/user-attachments/assets/d1712193-2975-4d51-a679-48249931637d)
+
 Kubernetes Cluster Overview
+
 Kubernetes is a system for automating deployment, scaling, and management of containerized applications. The cluster consists of a Master Node and multiple Worker Nodes.
 
 Master Node Components:
